@@ -159,8 +159,6 @@ This project focuses on backend correctness, clean data modeling, and discipline
 > Note: The `curl` examples are provided for convenience.  
 > The APIs can also be tested using Postman, Insomnia, or directly via a web browser.  
 > No OS-specific tools are required to run or test this project.
-> AI Assistance Note: AI tools were used as a development aid for clarification, debugging, and documentation support; all design decisions, implementation, and validation were performed by me.
-
 
 
 
