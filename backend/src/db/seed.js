@@ -95,4 +95,22 @@ db.serialize(() => {
   console.log("Database seeded successfully with resume data");
 });
 
+// Map skills to projects
+db.run(
+  `INSERT INTO project_skills (project_id, skill_id)
+   SELECT p.id, s.id
+   FROM projects p, skills s
+   WHERE p.title = 'Decentralized Fund Transfer DApp'
+   AND s.name IN ('Solidity', 'Web3.js', 'React')`
+);
+
+db.run(
+  `INSERT INTO project_skills (project_id, skill_id)
+   SELECT p.id, s.id
+   FROM projects p, skills s
+   WHERE p.title = 'Banking Web Application'
+   AND s.name IN ('Java', 'Spring WebFlux', 'SQL')`
+);
+
+
 db.close();
