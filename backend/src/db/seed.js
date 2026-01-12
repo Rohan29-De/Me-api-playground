@@ -2,10 +2,10 @@ const db = require("./database");
 
 db.serialize(() => {
   // Clear existing data
-  db.run("DELETE FROM profile");
-  db.run("DELETE FROM skills");
-  db.run("DELETE FROM projects");
   db.run("DELETE FROM project_skills");
+  db.run("DELETE FROM projects");
+  db.run("DELETE FROM skills");
+  db.run("DELETE FROM profile");
   db.run("DELETE FROM work");
   db.run("DELETE FROM links");
 
@@ -36,20 +36,10 @@ db.serialize(() => {
   ];
 
   skills.forEach(skill => {
-    db.run("INSERT INTO skills (name) VALUES (?)", [skill]);
+    db.run(`INSERT INTO skills (name) VALUES (?)`, [skill]);
   });
 
   // Insert projects
-  db.run(
-    `INSERT INTO projects (title, description, link)
-     VALUES (?, ?, ?)`,
-    [
-      "Comsub (PHP)",
-      "Email verification and subscription system that sends a random XKCD comic daily using CRON jobs.",
-      "https://github.com/Rohan29-De"
-    ]
-  );
-
   db.run(
     `INSERT INTO projects (title, description, link)
      VALUES (?, ?, ?)`,
@@ -92,25 +82,27 @@ db.serialize(() => {
     ]
   );
 
+  // ---- PROJECT ↔ SKILL MAPPINGS (AFTER INSERTS) ----
+
+  // Banking Web Application → Java, Spring WebFlux, SQL
+  db.run(
+    `INSERT INTO project_skills (project_id, skill_id)
+     SELECT p.id, s.id
+     FROM projects p, skills s
+     WHERE p.title = 'Banking Web Application'
+     AND s.name IN ('Java', 'Spring WebFlux', 'SQL')`
+  );
+
+  // Decentralized Fund Transfer DApp → Solidity, Web3.js, React
+  db.run(
+    `INSERT INTO project_skills (project_id, skill_id)
+     SELECT p.id, s.id
+     FROM projects p, skills s
+     WHERE p.title = 'Decentralized Fund Transfer DApp'
+     AND s.name IN ('Solidity', 'Web3.js', 'React')`
+  );
+
   console.log("Database seeded successfully with resume data");
 });
-
-// Map skills to projects
-db.run(
-  `INSERT INTO project_skills (project_id, skill_id)
-   SELECT p.id, s.id
-   FROM projects p, skills s
-   WHERE p.title = 'Decentralized Fund Transfer DApp'
-   AND s.name IN ('Solidity', 'Web3.js', 'React')`
-);
-
-db.run(
-  `INSERT INTO project_skills (project_id, skill_id)
-   SELECT p.id, s.id
-   FROM projects p, skills s
-   WHERE p.title = 'Banking Web Application'
-   AND s.name IN ('Java', 'Spring WebFlux', 'SQL')`
-);
-
 
 db.close();
